@@ -1,0 +1,66 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% block title %}Вход Учителя{% endblock %}
+{% block custom_links %}
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.2/dist/jquery.validate.js"></script>
+    <script src='{% static 'js/validate.js' %}'></script>
+    <link rel="stylesheet" href="{% static 'css/teacher.css' %}">
+{% endblock %}
+{% block content %}
+    <div class="view" style=" background-image: url('{% static 'images/teacher_students.jpg' %}'); background-repeat: no-repeat; background-size: cover; background-position: center center;">
+        <!-- Mask & flexbox options-->
+        <div class="mask rgba-gradient d-flex justify-content-center align-items-center">
+            <!-- Content -->
+            <div class="container">
+            <!--Grid row-->
+            <div class="row mt-6">
+                <!--Grid column-->
+                <div class="col-md-6 mx-auto">
+                <!--Form-->
+                <div class="card wow fadeInRight" data-wow-delay="0.3s">
+                    <div class="card-body">
+                    <!--Header-->
+                    <div class="text-center">
+                        <h3 class="white-text">С возвращением!</h3>
+                        <hr class="hr-light">
+                    </div>
+                    <!--Body-->
+                    {% if messages %}
+                        <div class="alert alert-danger" role="alert">
+                            {% for message in messages %}
+                                <p>{{ message }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <form method="POST" id='loginForm'>
+                        {% csrf_token %}
+                        <div class="md-form">
+                            <i class="fas fa-user prefix white-text active"></i>
+                            <label for="username">Имя пользователя:</label>
+                            <input type="text" name="username" maxlength="50" minlength='3' class="white-text form-control" id='username' required>
+                        </div>
+                        <div class="md-form">
+                            <i class="fas fa-lock prefix white-text active"></i>
+                            <label for="password">Пароль:</label>
+                            <input type="password" name='password' maxlength="255" minlength='5' class="white-text form-control" id='password' required>
+                        </div>
+                        <button class="btn btn-outline-info btn-rounded btn-block z-depth-0 my-4 waves-effect" type="submit">Подтвердить</button>
+                    </form>
+                    <p><a href='/teacher/teacher_registration/' style='color: white; text-decoration: underline;'>Нету аккаунта? Зарегистрируйтесь!</a></p>
+                    </div>
+                </div>
+                <!--/.Form-->
+                </div>
+                <!--Grid column-->
+            </div>
+            <!--Grid row-->
+            </div>
+            <!-- Content -->
+        </div>
+        <!-- Mask & flexbox options-->
+        </div>
+        <!-- Full Page Intro -->
+    </header>
+
+{% endblock %}

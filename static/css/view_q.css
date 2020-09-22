@@ -1,0 +1,12 @@
+.spinner {
+    display: none;
+    position: fixed;
+    z-index: 10000; /* High z-index so it is on top of the page */
+    top: 50%;
+    right: 50%; /* or: left: 50%; */
+    margin-top: 1rem; /* half of the elements height */
+    margin-right: 1rem /* half of the elements widht */
+}
+.active {
+    display: block;
+}

@@ -1,0 +1,54 @@
+{% extends 'schools/base.html' %}
+{% load static %}
+{% block title %} Ученики {% endblock %}
+{% block content %}
+    <style>
+        section {
+            padding: 20px;
+        }
+    </style>
+    <section>
+        <h1>Зарегистрированные ученики</h1>
+        <table class="table table-hover table-responsive">
+            <thead>
+                <tr>
+                    <th>Полное имя</th>
+                    <th>Имя пользователя</th>
+                    <th>Адресс электронной почты</th>
+                    <th>Класс</th>
+                    <th>Действие</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                    <td>{{ student.fullname }}</td>
+                    <td>{{ student.username }}</td>
+                    <td>{{ student.email }}</td>
+                    <td>{{ student.grade }} - {{ student.grade_letter }} класс</td>
+                    <td>
+                        <button class="btn btn-primary" data-toggle="modal" data-target="#deleteTestModal{{student.id}}">Удалить</button>
+                    </td>
+                     <div class="modal fade" id="deleteTestModal{{student.id}}" tabindex="-1" aria-labelledby="deleteTestModal{{student.id}}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteTestModal{{student.id}}">Вы уверены в своем выборе?</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="/schools/{{student.id}}/deleting_student/" method="POST">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-primary">Подтвердить</button>
+                                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Отменить</button>
+                                </form>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+{% endblock %}

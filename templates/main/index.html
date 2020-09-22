@@ -1,0 +1,147 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Главная страница | EduPro</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Material Design Bootstrap -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/css/mdb.min.css" rel="stylesheet">
+    <link rel='stylesheet' href='{% static 'css/styles.css' %}'>
+    <style>
+         @media (max-width: 740px) { html, body, .view { height: 1050px; } } 
+    </style>
+</head>
+<body>
+    <!-- Main navigation -->
+    <header>
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-dark fixed-top scrolling-navbar">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <strong>EduPro</strong>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-7" aria-controls="navbarSupportedContent-7" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent-7">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                <a class="nav-link" href="/teacher/teacher_registration/">Учительская</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link" href="/student/student_registration/">Для Ученика</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link" href="/about/">О Нас</a>
+                </li>
+            </ul>
+            </div>
+        </div>
+        </nav>
+        <!-- Navbar -->
+        <!-- Full Page Intro -->
+        <div class="view">
+        <!-- Mask & flexbox options-->
+        <div class="mask rgba-gradient d-flex justify-content-center align-items-center">
+            <!-- Content -->
+            <div class="container">
+            <!--Grid row-->
+            <div class="row mt-5">
+                <!--Grid column-->
+                <div class="col-md-6 mb-5 mt-md-0 mt-5 white-text text-center text-md-left">
+                <h1 class="h1-responsive font-weight-bold wow fadeInLeft" data-wow-delay="0.3s">Начните Учиться Вместе с Нами! </h1>
+                <hr class="hr-light wow fadeInLeft" data-wow-delay="0.3s">
+                <h6 class="mb-3 wow fadeInLeft" data-wow-delay="0.3s">EduPro - онлайн платформа, созданная для учеников! Проверяйте свои знания, решая тестирования и обучайтесь онлайн!</h6>
+                <a class="btn btn-outline-white wow fadeInLeft" href='about/' data-wow-delay="0.3s">Узнать Побольше</a>
+                </div>
+                <!--Grid column-->
+                <!--Grid column-->
+                <div class="col-md-6 col-xl-5 mb-4">
+                <!--Form-->
+                <div class="card wow fadeInRight" data-wow-delay="0.3s">
+                    <div class="card-body">
+                    <!--Header-->
+                    <div class="text-center">
+                        <h3 class="white-text">
+                        <i class="fas fa-user white-text"></i> Вход</h3>
+                        <hr class="hr-light">
+                    </div>
+                    <!--Body-->
+                    <form action='login_user/' method='POST'>
+                    {% csrf_token %}
+                        <div class="md-form">
+                            <i class="fas fa-user prefix white-text active"></i>
+                            <input type="text" id="username" class="white-text form-control" name='username'>
+                            <label for="username" class="active">Имя пользователя</label>
+                        </div>
+                        <div class="md-form">
+                            <i class="fas fa-lock prefix white-text active"></i>
+                            <input type="password" id="password" class="white-text form-control" name='password'>
+                            <label for="password">Пароль</label>
+                        </div>
+                        <div class="text-center mt-4">
+                            <button class="btn" style='background-color: #24aed8; color: white;'>Войти</button>
+                            <hr class="hr-light mb-3 mt-4">
+                            <div class="inline-ul text-center d-flex justify-content-center">
+                            <a class="p-2 m-2 tw-ic">
+                                <i class="fab fa-twitter white-text"></i>
+                            </a>
+                            <a class="p-2 m-2 li-ic">
+                                <i class="fab fa-linkedin-in white-text"> </i>
+                            </a>
+                            <a class="p-2 m-2 ins-ic">
+                                <i class="fab fa-instagram white-text"> </i>
+                            </a>
+                            </div>
+                        </div>
+                    </form>
+                    </div>
+                </div>
+                <!--/.Form-->
+                </div>
+                <!--Grid column-->
+            </div>
+            <!--Grid row-->
+            </div>
+            <!-- Content -->
+        </div>
+        <!-- Mask & flexbox options-->
+        </div>
+        <!-- Full Page Intro -->
+    </header>
+    <!-- Main navigation -->
+    <!--Main Layout-->
+    <main>
+        <div class="container">
+        <!--Grid row-->
+        <div class="row py-5">
+            <!--Grid column-->
+            <div class="col-md-12 text-center">
+            <p>Все права защищены. ID Software Technologies 2020</p>
+            </div>
+            <!--Grid column-->
+        </div>
+        <!--Grid row-->
+        </div>
+    </main>
+    <!--Main Layout-->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- Bootstrap tooltips -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <!-- MDB core JavaScript -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/js/mdb.min.js"></script>
+    <script>
+        new WOW().init();
+    </script>
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

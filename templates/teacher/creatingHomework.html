@@ -1,0 +1,100 @@
+{% extends 'teacher/base.html' %}
+{% load static %}
+{% block title %}Домашнее задание{% endblock %}
+{% block custom_links %}
+    <link rel="stylesheet" href="{% static 'css/teacher.css' %}">
+{% endblock %}
+{% block content %}
+{% if messages %}
+    {% for message in messages %}
+        <div class='toast' style='position: absolute;top: 1%;right: 1%;z-index:1'>
+            <div class="toast-header">
+                <strong class="mr-auto">EduPro</strong>
+                <small>Сейчас</small>
+                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="toast-body">
+                {{ message }}
+            </div>
+        </div>
+    {% endfor %}
+{% endif %}
+<section>
+<div class="container">
+    <form method='POST' id='creatingHomework'>
+        {% csrf_token %}
+        <div class='form-group'>
+            <label for="subject">Предмет</label> 
+            <input type="text" name="subject" class="form-control mb-4">
+        </div>
+        <div class='form-group'>
+            <label for="grade">Для какого класса?</label>
+            <select name="grade" class="browser-default custom-select mb-4">
+                <option value=""></option>
+                <option value="1">1 класс</option>
+                <option value="2">2 класс</option>
+                <option value="3">3 класс</option>
+                <option value="4">4 класс</option>
+                <option value="5">5 класс</option>
+                <option value="6">6 класс</option>
+                <option value="7">7 класс</option>
+                <option value="8">8 класс</option>
+                <option value="9">9 класс</option>
+                <option value="10">10 класс</option>
+                <option value="11">11 класс</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="duration">Продолжительность показа:</label>
+            <select name="duration" class="browser-default custom-select mb-4">
+                <option value=""></option>
+                <option value="1">1 день</option>
+                <option value="2">2 дня</option>
+                <option value="3">3 дня</option>
+                <option value="4">4 дня</option>
+                <option value="5">5 дней</option>
+                <option value="6">6 дней</option>
+                <option value="7">7 дней</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="task">Задание:</label>
+            <textarea class="form-control rounded-0" id="task" name='task' rows="3" placeholder="Задание"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Подтвердить</button>
+    </form>
+</div>
+</section>
+<script type='text/javascript'>
+$(document).ready(function() {
+    $('#creatingHomework').validate({
+        rules: {
+            subject: {
+                required: true,
+                minlength: 3,
+            },
+            grade: {
+                required: true,
+            },
+            duration: {
+                required: true,
+            },
+        },
+        messages: {
+            subject: {
+                required: 'Заполните поле',
+                minlength: 'Должно быть больше 3 букв'
+            },
+            grade: {
+                required: 'Выберите класс'
+            },
+            duration: {
+                required: 'Выберите продолжительность'
+            },
+        }
+    })
+})
+</script>
+{% endblock %}

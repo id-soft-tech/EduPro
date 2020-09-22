@@ -1,0 +1,283 @@
+{% extends 'teacher/base.html' %}
+{% load static %}
+{% block title %}Учительский рабочий стол{% endblock %}
+{% block custom_links %}
+    <link rel="stylesheet" href="{% static 'css/teacher.css' %}">
+    <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/jquery.validate.js" type="text/javascript"></script>
+    <script src='{% static 'js/teacher.js' %}'></script>
+{% endblock %}
+{% block content %}
+<style>
+    table th, table td {
+        font-size: 18px;
+    }
+</style>
+{% if messages %}
+    {% for message in messages %}
+        <div class='toast' style='position: absolute;top: 1%;right: 1%;z-index:1; opacity: 1;'>
+            <div class="toast-header">
+                <strong class="mr-auto">EduPro</strong>
+                <small>Сейчас</small>
+                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="toast-body">
+                {{ message }}
+            </div>
+        </div>
+    {% endfor %}
+{% endif %}
+<div class='container mt-5'>
+    <div class="row">
+        <div class='col'>
+            <h2>Тестирования</h2>
+            <table class="table table-hover table-responsive">
+                <thead>
+                    <tr>
+                        <th scope='col'>Название</th>
+                        <th scope='col'>Предмет</th>
+                        <th scope='col'>Дата начала</th>
+                        <th scope='col'>Дата закрытия</th>
+                        <th scope='col'>Продолжительность</th>
+                        <th scope='col'>Количество вопросов</th>
+                        <th scope='col'>Автор</th>
+                        <th scope='col'>Конфигурация</th>
+                        <th scope='col'>Закончилось</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for test in tests %}
+                    <tr>
+                        {% if teacher.id == test.teacher_id and now_after_week.date != test.created %}
+                            <td scope='row'>{{ test.name }}</td>
+                            <td>{{ test.subject }}</td>
+                            <td>{{ test.start_date }}</td>
+                            <td>{{ test.end_date }}</td>
+                            <td>{{ test.duration }} минут</td>
+                            <td>{{ test.quantity }} вопросов</td>
+                            <td>{{ test.author }}</td>
+                            {% if test.left != 0 %}
+                                <td>
+                                    <button type="button" data-test-id='{{test.id}}' class="btn btn-primary addQuestionButton" data-toggle="modal" data-target="#createQuestionModal">Добавить вопросы</button>
+                                    <button class="btn btn-secondary"  data-toggle="modal" data-target="#deleteTestModal{{test.id}}">Удалить</button>
+                                </td>
+                            {% elif now.date > test.end_date %}
+                                <td>
+                                    <button type="button" class="btn btn-primary"><a href="teacher/{{test.id}}/results/" class='result link' style="color:white;">Результаты</a></button>
+                                </td>
+                            {% else %}
+                                <td>
+                                    <a href="teacher/{{test.id}}/viewing_questions/" class='view_question link' style='color: white;'><button type="button" class="btn btn-primary">Просмотреть вопросы</button></a>
+                                    <button class="btn btn-secondary" data-toggle="modal" data-target="#deleteTestModal{{test.id}}">Удалить</button>
+                                </td>
+                            {% endif %}
+                            {% if now.date < test.end_date %}
+                                <td class='icon-td'>
+                                    <i class="fas fa-times-circle not-finished-icon"></i>
+                                </td>
+                            {% elif now.date == test.end_date %}
+                                <td class='icon-td'>
+                                   <i class="fas fa-check-circle finished-icon "></i>
+                                </td>
+                            {% endif %}
+                        {% endif %}
+                    </tr>
+                    <!-- Modals -->
+                    <!-- Deleting Test -->
+                    <div class="modal fade" id="deleteTestModal{{test.id}}" tabindex="-1" aria-labelledby="deleteTestModal{{test.id}}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteTestModal{{test.id}}">Вы уверены в своем выборе?</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="/teacher/{{test.id}}/deleting_test/" method="POST">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-primary">Подтвердить</button>
+                                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Отменить</button>
+                                </form>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Adding Question Modal -->
+                    {% if test.left != 0 %}
+                        <div class="modal fade" id="createQuestionModal" tabindex="-1" aria-labelledby="createQuestionModal" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="createQuestionModal">Добавление Вопроса</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                <span style='display:none' id='test_left'>{{test.left}}</span>
+                                <div class="modal-body">
+                                    <p class="status"></p>
+                                    <form class="add_question_form">
+                                        {% csrf_token %}
+                                        <div class='form-group'>
+                                            <label for="question_text" oninvalid="setCustomValidity('Custom Message')">Вопрос:</label>
+                                            <input type="text" name="question_text" class='form-control' minlength=3 required='required'>
+                                        </div>
+                                        <div class='form-group'>
+                                            <label for='option1'>Ответ №1:</label>
+                                            <input type="text" name="option1" class='form-control' required='required'/>
+                                        </div>
+                                        <div class='form-group'>
+                                            <label for='option2'>Ответ №2:</label>
+                                            <input type="text" name="option2" class='form-control' required='required'/>
+                                        </div>
+                                        <div class='form-group'>
+                                            <label for='option3'>Ответ №3:</label>
+                                            <input type="text" name="option3" class='form-control' required='required'/>
+                                        </div>
+                                        <div class='form-group'>
+                                            <label for='option4'>Ответ №4:</label>
+                                            <input type="text" name="option4" class='form-control' required='required'/>
+                                        </div>
+                                        <div class='form-group'>
+                                            <label for='correct_answer'>Правильный ответ</label>
+                                            <select name="correct_answer" class='form-control' required='required'>
+                                                <option value="1">Ответ 1</option>
+                                                <option value="2">Ответ 2</option>
+                                                <option value="3">Ответ 3</option>
+                                                <option value="4">Ответ 4</option>
+                                            </select>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary saving-button">
+                                            <span class="spinner-border spinner-border-sm loading-button" role="status" aria-hidden="true" style='display:none;'></span>
+                                            Сохранить
+                                        </button>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Отменить</button>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col mt-5">
+            <h2>Домашние Задания</h2>
+            <table class="table table-hover table-responsive">
+                <thead>
+                    <tr>
+                        <th scope='col'>Предмет</th>
+                        <th scope='col'>Класс</th>
+                        <th scope='col'>Продолжительность</th>
+                        <th scope='col'>Отправленные домашние задания</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for hw in homeworks %}
+                        <tr>
+                            <td>{{ hw.subject }}</td>
+                            <td>{{ hw.grade }} класс</td>
+                            <td>{{ hw.duration }} день(дня)</td>
+                            <td>
+                                <a href="teacher/{{hw.id}}/viewing_homework/" class='view_homework link' style='color: white;'><button type="button" class="btn btn-primary">Просмотреть</button></a>
+                                <button class="btn btn-secondary"  data-toggle="modal" data-target="#deleteHwModal{{hw.id}}">Удалить</button>
+                            </td>
+                        </tr>
+                        <!-- Deleting Test -->
+                        <div class="modal fade" id="deleteHwModal{{hw.id}}" tabindex="-1" aria-labelledby="deleteHwModal{{hw.id}}" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="deleteHwModal{{hw.id}}">Вы уверены в своем выборе?</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="/teacher/{{hw.id}}/deleting_homework/" method="POST">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-primary">Подтвердить</button>
+                                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Отменить</button>
+                                    </form>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class='col mt-5'>
+            <section>
+                <div class="card" style="background-color: #181C30;">
+                    <div class="card-body">
+                        <canvas id="lessonChart" class="mb-4" height="100"></canvas>
+                        <div class="row text-center text-white">
+                            <div class="col-md-4 mb-4 mb-md-0">
+                                <p class="font-weight-bold mb-1">{{ teacher.likes }}</p>
+                                <p class="text mb-md-0">Количество лайков</p>
+                            </div>
+
+                            <div class="col-md-4 mb-0">
+                                <p class="font-weight-bold mb-1">{{ teacher.number_of_lessons }}</p>
+                                <p class="text mb-0">Созданные домашние задания</p>
+                            </div>
+
+                            <div class="col-md-4 mb-0">
+                                <p class="font-weight-bold mb-1">{{ teacher.sentHomeworks }}</p>
+                                <p class="text mb-0">Отправленные домашние задания</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <div class="col mt-5">
+            <section>
+
+                <div class="card" style="background-color: #181C30;">
+                    <div class="card-body">
+
+                        <canvas id="testChart" class="mb-4" height="100"></canvas>
+
+                        <!--Grid row-->
+                        <div class="row text-center text-white">
+
+                        <!--Grid column-->
+                        <div class="col-md-4 mb-4 mb-md-0">
+
+                            <p class="font-weight-bold mb-1">{{ teacher.likes }}</p>
+                            <p class="text mb-md-0">Количество лайков</p>
+
+                        </div>
+                        <!--Grid column-->
+
+                        <!--Grid column-->
+                        <div class="col-md-4 mb-4 mb-md-0">
+
+                            <p class="font-weight-bold mb-1">{{ teacher.tested_pupils }}</p>
+                            <p class="text mb-md-0">Протестированные ученики</p>
+
+                        </div>
+                        <!--Grid column-->
+
+                        <!--Grid column-->
+                        <div class="col-md-4 mb-0">
+
+                            <p class="font-weight-bold mb-1">{{ teacher.number_of_tests }}</p>
+                            <p class="text mb-0">Созданные тестирования</p>
+
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+{% endblock %}

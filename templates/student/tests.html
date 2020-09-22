@@ -1,0 +1,72 @@
+{% extends 'student/base.html' %}
+{% load static %}
+{% block title %}Тестирования{% endblock %}
+{% block custom_links %}
+    <link rel="stylesheet" href="{% static 'css/testing.css' %}">
+{% endblock %}
+{% block content %}
+    <style>
+        html,
+        body,
+        header,
+        .view {
+            height: 100%;
+        }  
+    </style>
+    {% if tests %}
+        <style>
+            .wrapper {
+                padding-top: 90px;
+            }
+        </style>
+        <div class="col-lg-10 col-md-12 wrapper">
+            <section>
+                    {% for test in tests %}
+                        {% if test.grade == grade %}
+                            <div class="col mb-4" style='max-width: 30rem;'>
+                                <div class="card h-100">
+                                    <img src="{% static 'images/test.svg' %}" alt="Тестирование">
+                                    <div class="card-body">
+                                        <h3 class="card-title">{{ test.name }}</h3>
+                                        <p class="card-text"><span class='description'>Предмет:</span> {{ test.subject }}</p>
+                                        <p class="card-text"><span class='description'>Дата начала:</span> {{ test.start_date }}</p>
+                                        <p class="card-text"><span class='description'>Дата закрытия:</span> {{ test.end_date }}</p>
+                                        <p class="card-text"><span class='description'>Продолжительность тестирования:</span> {{ test.duration }} минут</p>
+                                        <p class="card-text"><span class='description'>Количество вопросов:</span> {{ test.quantity }} вопросов</p>
+                                    </div>
+                                    <button class='btn btn-primary'><a href='/student/{{test.id}}/0/solving_test/' style='color:white;'>Взять тестирования</a></button>
+                                    <div class="card-footer">
+                                        <small class="text-muted">Составитель: <span class='author'>{{ test.author }}</span></small>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+            </section>
+        </div>
+    {% else %}
+        <style>
+            header {
+                padding-top: 50px;
+            }
+        </style>
+        <header>
+            <div class="view grey lighten-3">
+                <div class="mask">
+                    <div class="container h-100">
+                        <div class="row align-items-center h-100">
+                            <div class="col-md-6">
+                                <h1 class="mb-4">Тестирования на данный момент <span class="text-danger">не доступны</span></h1>
+                                <p class="mb-4 pb-2 dark-grey-text">Тесты не подготовлены или дата их открытия не наступила. Свяжитесь с учителем, чтобы узнать точную дату начала тестирования</p>
+                                <a href='/student/results_tests/'><button type="button" class="btn btn-danger btn-rounded btn-md ml-md-0">Результаты прошлых тестирований</button></a>
+                            </div>
+                            <div class="col-md-6">
+                            <img src="{% static 'images/testing-placeholder.png' %}" alt="" class="img-fluid">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+    {% endif %}
+{% endblock %}

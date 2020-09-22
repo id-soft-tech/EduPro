@@ -1,0 +1,144 @@
+{% extends 'student/base.html' %}
+{% load static %}
+{% block title %}Профиль{% endblock %}
+{% block custom_links %}
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endblock %}
+{% block content %}
+    <section class='wrapper' aria-live="polite" aria-atomic="true" style="position: relative;">
+        {% if messages %}
+            {% for message in messages %}
+                <div class='toast' style='position: absolute;top: 1%;right: 1%;z-index:1'>
+                    <div class="toast-header">
+                        <strong class="mr-auto">EduPro</strong>
+                        <small>Сейчас</small>
+                        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="toast-body">
+                        {{ message }}
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+        <!-- Hero section start -->
+        <div class="hero-div spad">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-xl-10 offset-xl-1">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="hero-text">
+                                    <h2>{{ request.user.first_name }}</h2>
+                                </div>
+                                <div class="hero-info">
+                                    <h2>Общая Информация</h2>
+                                    <ul>
+                                        <li><span>Пользователь:</span>{{ request.user.username }}</li>
+                                        <li><span>Школа:</span>{{ student.school.name }}</li>
+                                        <li><span>EduName:</span>{{ student.school.alias }}</li>
+                                        <li class="inline"><button data-toggle="modal" data-target="#changeFullname" class="btn btn-primary">Изменить полное имя</button></li>
+                                        <li class="inline"><button data-toggle="modal" data-target="#changeUsername" class="btn btn-primary">Изменить имя пользователя</button></li>
+                                        <li class="inline"><button data-toggle="modal" data-target="#changePasswordData" class="btn btn-primary">Изменить пароль</button></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Change Username Modal -->
+        <div class="modal fade" id="changeUsername" tabindex="-1" aria-labelledby="changeUsername" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="changeUsername">Изменение имени пользователя</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                <div class="modal-body">
+                    <p class="status"></p>
+                    <form action='/student/change_username/' method="POST">
+                        {% csrf_token %}
+                        <div class='form-group'>
+                            <label for='username'>Имя пользователя:</label>
+                            <input type="text" name="username" class='form-control' id='username' required minlength='5' value='{{ request.user.username }}'/>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Сохранить</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Отменить</button>
+                    </form>
+                </div>
+                </div>
+            </div>
+        </div>
+        <!-- Change fullname Modal-->
+        <div class="modal fade" id="changeFullname" tabindex="-1" aria-labelledby="changeFullname" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="changeFullname">Изменение полного имени</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                <div class="modal-body">
+                    <p class="status"></p>
+                    <form action='/student/change_fullname/' method="POST">
+                        {% csrf_token %}
+                        <div class='form-group'>
+                            <label for="fullname">Фамилия и Имя:</label>
+                            <input type="text" name='fullname' class='form-control' id='fullname' required minlength='3' value='{{ request.user.first_name }}'>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Сохранить</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Отменить</button>
+                    </form>
+                </div>
+                </div>
+            </div>
+        </div>
+        <!-- Change password Modal-->
+        <div class="modal fade" id="changePasswordData" tabindex="-1" aria-labelledby="changePasswordData" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="changePasswordData">Изменение Пароль</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                <div class="modal-body">
+                    <p class="status"></p>
+                    <form action="/student/change_password/" method="POST" id='passwordInfo'>
+                        {% csrf_token %}
+                        <div class='form-group'>
+                            <label for="password0">Старый пароль:</label>
+                            <input type="password" name='password0' class='form-control'>
+                        </div>
+                        <div class='form-group'>
+                            <label for='password1'>Новый пароль:</label>
+                            <input type="password" name="password1" id='password1' class='form-control'/>
+                        </div>
+                        <div class='form-group'>
+                            <label for='password2'>Подтвердите пароль:</label>
+                            <input type="password" name="password2" class='form-control'/>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Сохранить</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Отменить</button>
+                    </form>
+                </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script src="{% static 'js/validate.js' %}"></script>
+    <script>
+        $(document).ready(function(){
+            $('.toast').toast({delay: 5000});
+            $('.toast').toast('show');
+        });
+    </script>
+{% endblock %}

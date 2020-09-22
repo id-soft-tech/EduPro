@@ -1,0 +1,82 @@
+{% extends 'teacher/base.html' %}
+{% load static %}
+{% block title %}Домашние Задания{% endblock %}
+{% block content %}
+<style>
+    table th, table td {
+        font-size: 18px;
+    }
+    .not-finished-icon {
+        color: red;
+    }
+    .finished-icon {
+        color: green;
+    }
+    .icon-td {
+        text-align: center;
+}
+</style>
+{% if messages %}
+    {% for message in messages %}
+        <div class='toast' style='position: absolute;top: 1%;right: 1%;z-index:1; opacity: 1;'>
+            <div class="toast-header">
+                <strong class="mr-auto">EduPro</strong>
+                <small>Сейчас</small>
+                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="toast-body">
+                {{ message }}
+            </div>
+        </div>
+    {% endfor %}
+{% endif %}
+<div class='container mt-5'>
+    <div class="row">
+        <div class='col'>
+            <h2>Домашние задания</h2>
+            {% if homeworks %}
+                <table class="table table-hover table-responsive">
+                    <thead>
+                        <tr>
+                            <th scope='col'>Ученик</th>
+                            <th scope='col'>Класс</th>
+                            <th scope='col'>Домашнее задание</th>
+                            <th scope='col'>Проверено</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for doneHw in homeworks %}
+                            <tr>
+                                <td>{{ doneHw.student.fullname }}</td>
+                                <td>{{ doneHw.student.grade }} "{{doneHw.student.grade_letter}}" класс</td>
+                                {% if doneHw.checked %}
+                                    <td>
+                                        <p><span class='text-success'>Проверено.</span> Оценка - {{ doneHw.mark }}</p>
+                                    </td>
+                                {% else %}
+                                    <td>
+                                        <a href="/teacher/{{doneHw.id}}/{{doneHw.student.id}}/student_homework/" class='student_homework link' style='color: white;'><button type="button" class="btn btn-primary">Проверить</button></a>
+                                    </td>
+                                {% endif %}
+                                {% if doneHw.checked %}
+                                    <td class="icon-td">
+                                        <i class="fas fa-check-circle finished-icon "></i>
+                                    </td>
+                                {% else %}
+                                    <td class="icon-td">
+                                        <i class="fas fa-times-circle not-finished-icon"></i>
+                                    </td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                    <h4 class="text-muted mt-5">Ученики ещё не сделали домашнее задание</h4>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

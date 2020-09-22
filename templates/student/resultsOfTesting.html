@@ -1,0 +1,94 @@
+{% extends 'student/base.html' %}
+{% load static %}
+{% block title %}Результаты{% endblock %}
+{% block content %}
+    <style>
+        html,
+        body,
+        header,
+        .view {
+            height: 100%;
+        }  
+    </style>
+    {% if testings %}
+        <style>
+            .wrapper {
+                padding-top: 90px;
+            }
+        </style>
+        <div class="col-lg-10 col-md-12 wrapper">
+            <section>
+                <div class="card-deck">
+                    {% for test in testings %}
+                    <div class="card border-dark" style="max-width: 20rem;">
+                        <div class="card-header">{{ test.test.subject }}</div>
+                        <div class="card-body text-dark">
+                            <h5 class="card-title">{{ test.test.name }}</h5>
+                            <p class="card-text">Результат - {{ test.result }}</p>
+                            <a class="card-link"><button class="btn btn-primary" data-toggle="modal" data-target="#answersModal{{test.id}}">Просмотреть ответы</button></a>
+                        </div>
+                      </div>
+                        </div>
+                        <div class="modal fade" id="answersModal{{test.id}}" tabindex="-1" aria-labelledby="answersModal{{test.id}}" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="answersModal{{test.id}}">Ответы</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    {% for answers in answers_of_testings %}
+                                    <table class="table table-hover table-responsive">
+                                        <thead>
+                                            <tr>
+                                                <th scope='col'>Вопрос</th>
+                                                <th scope='col'>Ваш Ответ</th>
+                                                <th scope='col'>Правильный ответ</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for a in answers %}
+                                                {% if a.enrolledTesting_id == test.id %}
+                                                <tr>
+                                                    <td scope='row'>{{ a.enrolledTesting_id }}</td>
+                                                    <td>{{ a.option }}</td>
+                                                    <td>{{ a.question.answer }}</td>
+                                                </tr>
+                                                {% endif %} 
+                                            {% endfor %}
+                                    {% endfor %}
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </section>
+        </div>
+    {% else %}
+        <style>
+            header {
+                padding-top: 60px;
+            }
+        </style>
+        <header>
+            <div class="view grey lighten-3">
+                <div class="mask">
+                    <div class="container h-100">
+                        <div class="row align-items-center h-100">
+                            <div class="col-md-6">
+                                <h1 class="mb-4">Вы <span class="text-danger">не участвовали</span> в тестированиях</h1>
+                                <p class="mb-4 pb-2 dark-grey-text">Участвуйте в тестированиях! Дату следующего тестирования назначит учитель.</p>
+                            </div>
+                            <div class="col-md-6">
+                            <img src="{% static 'images/aptitude-tests.svg' %}" alt="" class="img-fluid">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+    {% endif %}
+{% endblock %}

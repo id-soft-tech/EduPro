@@ -1,0 +1,122 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% block title %}Регистрация Ученика{% endblock %}
+{% block custom_links %}
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.2/dist/jquery.validate.js"></script>
+{% endblock %}
+{% block content %}
+    <style>
+        @media (max-width: 850px) and (min-width: 800px) {
+            html, body, header, .view {
+                height: 100%;
+            }
+        }
+    </style>
+    <div style="background-image: url('{% static 'images/login.jpg' %}'); background-repeat: no-repeat; background-size: cover; background-position: center center;height: 1000px;">
+        <!-- Mask & flexbox options-->
+        <div class="mask rgba-gradient d-flex justify-content-center align-items-center" style="height: 1000px;">
+            <!-- Content -->
+            <div class="container">
+            <!--Grid row-->
+            <div class="row mt-6">
+                <!--Grid column-->
+                <div class="col-md-6 mx-auto" style='margin-top: 90px; margin-bottom: 40px;'>
+                <!--Form-->
+                <div class="card wow fadeInRight " data-wow-delay="0.3s">
+                    <div class="card-body">
+                    <!--Header-->
+                    <div class="text-center">
+                        <h3 class="white-text">Вы Ученик?</h3>
+                        <hr class="hr-light">
+                    </div>
+                    <!--Body-->
+                    {% if messages %}
+                        <div class="alert alert-danger" role="alert">
+                            {% for message in messages %}
+                                <p>{{ message }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="md-form">
+                            <i class="fas fa-signature prefix white-text active"></i>
+                            <label for="fullname">Полное имя:</label>
+                            <input type="text" name="fullname" minlength="5" class="white-text form-control" id='fullname' required>
+                        </div>
+                        <div class="md-form">
+                            <i class="fas fa-user prefix white-text active"></i>
+                            <label for="username">Имя пользователя:</label>
+                            <input type="text" name="username" maxlength="50" minlength='3' class="white-text form-control" id='username' required>
+                        </div>
+                        <div class="md-form">
+                            <i class="fas fa-envelope prefix white-text active"></i>
+                            <label for="email">Email:</label>
+                            <input type="email" name="email" maxlength="255" class="white-text form-control" id='email' required>
+                        </div>
+                        <div class="md-form">
+                            <i class="fas fa-lock prefix white-text active"></i>
+                            <label for="password">Пароль:</label>
+                            <input type="password" name='password' maxlength="255" minlength='5' class="white-text form-control" id='password' required>
+                        </div>
+                        <div class="md-form">
+                            <i class="fas fa-school prefix white-text active"></i>
+                            <label for='alias'>EduName:</label>
+                            <input type="text" name='alias' maxlength="50" minlength='3' class="white-text form-control" aria-describedby="textHelp" id='alias' required>
+                            <small id="textHelp" class="form-text" style='color: white;'>Предоставляется школой</small>
+                        </div>
+                        <div class="md-form">
+                            <i class="fas fa-lock prefix white-text active"></i>
+                            <label for="school_password">Пароль школы:</label>
+                            <input type="password" name="school_password" maxlength="255" minlength='5' class="white-text form-control" id='school_password' required>
+                        </div>
+                        <label for='grade' style='color: white;'>Выберите ваш класс:</label>
+                        <div class="form-row mb-4">
+                            <div class='col'>
+                                <select name="grade" class="browser-default custom-select mb-4" required>
+                                    <option value=''></option>
+                                    <option value="1">1 класс</option>
+                                    <option value="2">2 класс</option>
+                                    <option value="3">3 класс</option>
+                                    <option value="4">4 класс</option>
+                                    <option value="5">5 класс</option>
+                                    <option value="6">6 класс</option>
+                                    <option value="7">7 класс</option>
+                                    <option value="8">8 класс</option>
+                                    <option value="9">9 класс</option>
+                                    <option value="10">10 класс</option>
+                                    <option value="11">11 класс</option>
+                                </select>
+                            </div>
+                            <div class='col'>
+                                <select name="grade_letter" class="browser-default custom-select mb-4" required>
+                                    <option value=''></option>
+                                    <option value="А">А</option>
+                                    <option value="Б">Б</option>
+                                    <option value="В">В</option>
+                                    <option value="Г">Г</option>
+                                    <option value="Е">Е</option>
+                                    <option value="Ё">Ё</option>
+                                    <option value="Ж">Ж</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button class="btn btn-outline-info btn-rounded btn-block z-depth-0 my-4 waves-effect" type="submit">Подтвердить</button>
+                    </form>
+                    <p><a href="/student/student_login/" style='color: white; text-decoration: underline;'>Уже есть аккаунт? Ввойдите!</a></p>
+                    </div>
+                </div>
+                <!--/.Form-->
+                </div>
+                <!--Grid column-->
+            </div>
+            <!--Grid row-->
+            </div>
+            <!-- Content -->
+        </div>
+        <!-- Mask & flexbox options-->
+        </div>
+        <!-- Full Page Intro -->
+    </header>
+{% endblock %}

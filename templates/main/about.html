@@ -1,0 +1,30 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% block title %}О Нас{% endblock %}
+{% block content %}
+    <style>
+        div h1, div h3 {
+            color: white;
+        }
+    </style>
+    <div class="view" style="background-image: url('{% static 'images/edupro.jpg' %}'); background-repeat: no-repeat; background-size: cover; background-position: center center;">
+        <!-- Mask & flexbox options-->
+        <div class="mask rgba-gradient d-flex justify-content-center align-items-center">
+            <!-- Content -->
+            <div class="container">
+            <!--Grid row-->
+                <div class="row mt-6">
+                    <h1>ID Software Technologies</h1>
+                </div>
+                <div class="row mt-6">
+                    <h3>Эта страница на стадии разработки</h3>
+                </div>
+            <!--Grid row-->
+            </div>
+            <!-- Content -->
+        </div>
+        <!-- Mask & flexbox options-->
+    </div>
+    <!-- Full Page Intro -->
+</header>
+{% endblock %}

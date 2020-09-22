@@ -1,0 +1,76 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Решение тестирования | EduPro</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.14.0/css/all.css" integrity="sha384-HzLeBuhoNPvSl5KYnjx0BT+WB0QEEqLprO+NBkkk5gbc67FTaL7XIGa2w1L0Xbgc" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/css/mdb.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/solving-test.css' %}">
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+</head>
+<body>
+    <style>
+        .wrapper {
+            margin-top: 90px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+    <div class='col-lg-8 border p-4 wrapper'>
+        {% for q in ques %}
+            <form id='solve_test_form' data-test-id='{{ q.test.id }}' data-question-id='{{ q.id }}'>
+                <h2>{{ ques.current_page_number}} {{ q.question_text }}</h2>
+                {% for o in q.option_set.all %}
+                    <label class='container'>{{ o.option_text }}
+                        <input type='radio' id='option{{o.option_number}}' name='option' value="{{ o.option_number }}">
+                        <span class='checkmark'></span>
+                    </label>
+                {% endfor %}
+            </form>
+            
+        {% endfor %}
+        <div class='paginator'>
+            <div class='form-group'>
+                {% if ques.has_next %}
+                    <a href='?page={{ ques.next_page_number }}'><button class='btn form-control btn-primary' type='button' id='save_answer' style="height: 45px;">Следующий</button></a>
+                {% else %}
+                    <button type="button" class="btn btn-success form-control resultWarningModal" data-toggle="modal" data-target="#resultWarningModal" id='save_answer' style="height: 45px;">Сдать тестирование</button>
+                {% endif %}
+            </div>
+        </div>
+        <div class="modal fade" id="resultWarningModal" tabindex="-1" aria-labelledby="resultWarningModal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="resultWarningModal">Поздравляем</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p class="text">Вы успешно закончили тестирования. Результаты выйдут после закрытия тестирования
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <a href='/'><button type="button" class="btn btn-primary">Вернуться домой</button></a>
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Отменить</button>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="timer"></div>
+    <script src='{% static 'js/solve_test.js' %}'></script>
+    <footer></footer>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <!-- MDB core JavaScript -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/js/mdb.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.2/dist/jquery.validate.js"></script>
+</body>
+</html>

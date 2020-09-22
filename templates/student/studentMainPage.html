@@ -1,0 +1,107 @@
+{% extends 'student/base.html' %}
+{% load static %}
+{% block content %}
+<script src="https://rawgit.com/enyo/dropzone/master/dist/dropzone.js"></script>
+<link rel="stylesheet" href="https://rawgit.com/enyo/dropzone/master/dist/dropzone.css">
+<style>
+    html,
+    body,
+    header,
+    .view {
+        height: 100%;
+    }   
+</style>
+{% if homeworks %}
+    <style>
+        .wrapper {
+            padding-top: 90px;
+        }
+    </style>
+    <div class="col-lg-10 col-md-12 wrapper d-flex justify-content-center"">
+        <section>
+            <div class="card-deck">
+                {% for hw in homeworks %}
+                    <div class="card mb-4" style='max-width: 22rem;'>
+
+                        <!-- Card image -->
+                        <img class="card-img-top" src="{% static 'images/homework.jpg' %}" alt="Card image cap">
+                    
+                        <!-- Card content -->
+                        <div class="card-body">
+                    
+                        <!-- Title -->
+                        <h4 class="card-title blue-text pb-2"><a>{{ hw.subject }}</a></h4>
+                        <!-- Text -->
+                        <p>Задание: {{ hw.task }}</p>
+                        <p class="card-text">Учитель: {{ hw.teacher.fullname }}</p>
+                        <!-- Button -->
+                        <button type="button" class="btn btn-primary sendHomeworkButton" data-toggle="modal" data-target="#sendHomework{{hw.id}}" data-hw-id="{{ hw.id }}">Сдать задание</button>
+                    
+                        </div>
+                
+                    </div>
+                    <div class="modal fade" id="sendHomework{{hw.id}}" tabindex="-1" role="dialog" aria-labelledby="sendHomework{{hw.id}}" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="sendHomework{{hw.id}}">{{ hw.subject }}</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="/student/{{hw.id}}/upload/" class="dropzone" id='homeworkDropzone' method="POST" data-username='{{ request.user.username }}'>
+                                        {% csrf_token %}
+                                        <div class="fallback">
+                                            <input name="file" type="file" multiple />
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-primary submitHomework">Сдать</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+{% else %}
+    <!-- Main navigation -->
+    <header>
+    
+        <!-- Full Page Intro -->
+        <div class="view grey lighten-3">
+        <!-- Mask & flexbox options-->
+        <div class="mask">
+            <!-- Content -->
+            <div class="container h-100">
+            <!--Grid row-->
+            <div class="row align-items-center h-100">
+                <!--Grid column-->
+                <div class="col-md-6">
+                    <h1 class="mb-4">Вы успешно <span class="text-warning">сдали все</span><br><span class="cyan-text">задания</span></h1>
+                    <p class="mb-4 pb-2 dark-grey-text">Учитель подготовливает новые задание. Можете отдыхать. Вы отлично поработали сегодня</p>
+                </div>
+                <!--Grid column-->
+            
+                <!--Grid column-->
+                <div class="col-md-6">
+                <img src="{% static 'images/hiker-man.svg' %}" alt="" class="img-fluid">
+                </div>
+                <!--Grid column-->
+            </div>
+            <!--Grid row-->
+            </div>
+            <!-- Content -->
+        </div>
+        <!-- Mask & flexbox options-->
+        </div>
+        <!-- Full Page Intro -->
+        
+    </header>
+{% endif %}
+<script src="{% static 'js/homework.js' %}"></script>
+{% endblock %}

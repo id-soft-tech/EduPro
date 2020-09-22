@@ -1,0 +1,147 @@
+{% extends 'teacher/base.html' %}
+{% load static %}
+{% block title %}Создание тестов{% endblock %}
+{% block custom_links %}
+    <link rel="stylesheet" href="{% static 'css/teacher.css' %}">
+{% endblock %}
+{% block content %}
+    <section>
+        <div class="container">
+            <form method='POST' id='creatingTest'>
+                {% if messages %}
+                    <div class="alert alert-danger" role="alert">
+                        {% for message in messages %}
+                            <p>{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                {% csrf_token %}
+                <div clas='form-group'>
+                    <label for="name">Название Тестрирования</label>
+                    <input type="text" name="name" class="form-control">
+                </div>
+                <div class='form-group'>
+                    <label for="subject">Предмет</label> 
+                    <input type="text" name="subject" class="form-control">
+                </div>
+                <div class='form-group'>
+                    <label for="grade">Для какого класса?</label>
+                    <select name="grade" class="browser-default custom-select">
+                        <option value=""></option>
+                        <option value="1">1 класс</option>
+                        <option value="2">2 класс</option>
+                        <option value="3">3 класс</option>
+                        <option value="4">4 класс</option>
+                        <option value="5">5 класс</option>
+                        <option value="6">6 класс</option>
+                        <option value="7">7 класс</option>
+                        <option value="8">8 класс</option>
+                        <option value="9">9 класс</option>
+                        <option value="10">10 класс</option>
+                        <option value="11">11 класс</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="start_date">Дата открытия тестирования</label>
+                    <input placeholder="Выберите дату" type="date" id="start_date" name='start_date' class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for='end_date'>Дата закрытия тестирования</label>
+                    <input placeholder="Выберите дату" type="date" id="end_date" name="end_date" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="duration">Продолжительность:</label>
+                    <select name="duration" class="browser-default custom-select">
+                        <option value=""></option>
+                        <option value="15">15 минут</option>
+                        <option value="30">30 минут</option>
+                        <option value="60">1 час</option>
+                        <option value="90">1 час 30 минут</option>
+                        <option value="120">2 часа</option>
+                        <option value="150">2 часа 30 минут</option>
+                        <option value="180">3 часа</option>
+                    </select>
+                </div>
+                <div for="form-group">
+                    <label for='quantity'>Количество тестов</label>
+                    <select name="quantity" class="browser-default custom-select">
+                        <option value=""></option>
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                        <option value="15">15</option>
+                        <option value="20">20</option>
+                        <option value="25">25</option>
+                        <option value="30">30</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary mt-3">Подтвердить</button>
+            </form>
+        </div>
+    </section>
+    <script type='text/javascript'>
+        $(document).ready(function() {
+            $('#creatingTest').validate({
+                rules: {
+                    name: {
+                        required: true,
+                        minlength: 5,
+                    },
+                    subject: {
+                        required: true,
+                        minlength: 3,
+                    },
+                    grade: {
+                        required: true,
+                    },
+                    start_date: {
+                        required: true,
+                    },
+                    end_date: {
+                        required: true,
+                    },
+                    duration: {
+                        required: true,
+                    },
+                    quantity: {
+                        required: true
+                    }
+                },
+                messages: {
+                    name: {
+                        required: 'Заполните поле',
+                        minlength: 'Должно быть больше 5 букв'
+                    },
+                    subject: {
+                        required: 'Заполните поле',
+                        minlength: 'Должно быть больше 3 букв'
+                    },
+                    grade: {
+                        required: 'Выберите класс'
+                    },
+                    start_date: {
+                        required: 'Выберите дату открытия'
+                    },
+                    end_date: {
+                        required: 'Выберите дату закрытия'
+                    },
+                    duration: {
+                        required: 'Выберите продолжительность'
+                    },
+                    quantity: {
+                        required: 'Выберите количество тестирования'
+                    }
+                }
+            })
+        })
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
+    <script type="text/javascript">// Data Picker Initialization
+        $('.datepicker').datepicker({
+            format: 'yyyy-mm-dd',
+        });
+        $(document).ready(function(){
+            $('.toast').toast({delay: 5000});
+            $('.toast').toast('show');
+        });
+    </script>
+{% endblock %}

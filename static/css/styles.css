@@ -1,0 +1,70 @@
+/* Required for full background image */
+.view {
+    background-image: url('../images/intro.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+}
+html,
+body,
+header,
+.view {
+  height: 100%;
+}
+
+@media (max-width: 740px) {
+  html,
+  body,
+  header,
+  .view {
+    height: 1000px;
+  }
+}
+@media (min-width: 800px) and (max-width: 850px) {
+  html,
+  body,
+  header,
+  .view {
+    height: 650px;
+  }
+}
+
+.top-nav-collapse {
+  background-color: #30bae4 !important;
+}
+
+.navbar:not(.top-nav-collapse) {
+  background: transparent !important;
+}
+
+@media (max-width: 991px) {
+  .navbar:not(.top-nav-collapse) {
+    background: #2db0d8 !important;
+  }
+}
+
+.rgba-gradient {
+  background: -webkit-linear-gradient(45deg, rgba(0, 0, 0, 0.7), rgba(68, 68, 68, 0.3) 100%);
+  background: -webkit-gradient(linear, 45deg, from(rgba(0, 0, 0, 0.7), rgba(75, 75, 75, 0.2) 100%));
+  background: linear-gradient(to 45deg, rgba(0, 0, 0, 0.7), rgba(61, 61, 61, 0.3)100%);
+}
+
+.card {
+  background-color: rgba(123, 174, 215, 0.2);
+}
+
+.md-form label {
+  color: #ffffff;
+}
+
+h6 {
+  line-height: 1.7;
+}
+.error-wrapper {
+  height: 45px;
+  display: block;
+  position: relative;
+}
+.error-wrapper label {
+  margin-left: 30px;
+}
