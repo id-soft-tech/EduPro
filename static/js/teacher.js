@@ -45,7 +45,7 @@ $(document).ready(function() {
             success: function(response) {
                 console.log(response.test_left)
                 let test_left = response.test_left
-                if (test_left == 0) {
+                if (test_left == 1) {
                     location.reload()
                 }
             }

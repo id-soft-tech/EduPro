@@ -5,6 +5,19 @@
     <link rel="stylesheet" href="{% static 'css/teacher.css' %}">
 {% endblock %}
 {% block content %}
+<style>
+    table th, table td {
+        font-size: 18px;
+    }
+    .answerWrapper {
+        border-bottom: 1px solid grey;
+        margin-top: 10px;
+    }
+    .text-bold {
+        font-weight: 700;
+        margin-right: 5px;
+    }
+</style>
 {% if messages %}
     {% for message in messages %}
         <div class='toast' style='position: absolute;top: 1%;right: 1%;z-index:1'>
@@ -31,19 +44,48 @@
                     <th scope='col'>Класс</th>
                     <th scope='col'>Результат</th>
                     <th scope='col'>Всего вопросов</th>
+                    <th scope='col'>Просмотреть</th>
                 </tr>
             </thead>
             <tbody>
-                {% for person in results %}
+                {% for result in enrolledTestingResults %}
                     <tr>
                         <td scope='row'>{{ test.name }}</td>
-                        <td>{{ person.student.fullname }}</td>
-                        <td>{{ person.student.grade }} "{{ person.student.grade_letter }}" класс</td>
-                        <td>{{ person.result }} балл(ов)</td>
+                        <td>{{ result.student.fullname }}</td>
+                        <td>{{ result.student.grade }} "{{ result.student.grade_letter }}" класс</td>
+                        <td>{{ result.result }} балла(ов)</td>
                         <td>{{ test.quantity }} вопросов</td>
+                        <td><a class="card-link"><button class="btn btn-primary" data-toggle="modal" data-target="#answersModal{{result.student.id}}">Просмотреть ответы</button></a></td>
                     </tr>
-            {% endfor %}
-        </tbody>
+                    <div class="modal fade" id="answersModal{{result.student.id}}" tabindex="-1" aria-labelledby="answersModal{{result.student.id}}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="answersModal{{result.student.id}}">Ответы</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    {% for answers in answersOfTestings %}
+                                        {% for a in answers %}
+                                            {% if a.enrolledTesting.student.id == result.student.id %}
+                                                <div class="answerWrapper">
+                                                    <p scope='row'>Вопрос: {{ a.question_text }}</p>
+                                                    <p>Ответ: {{ a.answer }}</p>
+                                                    <p>Правильный ответ: {{ a.correctAnswer }}</p>
+                                                    <p>{% if a.answer == a.correctAnswer %}<span class='text-bold'>Правильно!</span><i class="fas fa-check-circle finished-icon "></i>{% else %}<span class='text-bold'>Неправильно!</span> <i class="fas fa-times-circle not-finished-icon"></i>{% endif %}</p>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </tbody>
+        </table>
 </section>
 <script>
     $(document).ready(function () {

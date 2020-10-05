@@ -1,13 +1,19 @@
 from django.shortcuts import render, redirect
-from accounts.models import School, Student, Test, Question, Teacher
-from .models import EnrolledTesting, DoneHomework, ImagesHomework
-from teacher.models import Homework
+from teacher.models import Teacher, Homework
+from schools.models import School
+from test_app.models import Test, Question, Option
+from .models import EnrolledTesting, DoneHomework, ImagesHomework, Answer, Student, Group
 from django.contrib import messages
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate, logout
 from django.core.paginator import Paginator
-import datetime, pytz
+import datetime, pytz, hashlib, uuid, sys
+
+# FOR COMPRESSING IMAGE
+from django.core.files import File
+from io import BytesIO
+from PIL import Image
 
 
 # Create your views here.
@@ -48,7 +54,12 @@ def student_registration(request):
                 school_user = authenticate(username=alias, password=school_password)
                 if school_user is not None:
                     school = School.objects.get(alias=alias)
-                    school.student_set.create(fullname=fullname, last_name='student', email=email, username=username, grade=grade[0], grade_letter=grade_letter[0])
+                    try:
+                        group = Group.objects.get(grade=grade[0], grade_letter=grade_letter)
+                    except:
+                        group = Group.objects.create(grade=grade[0], grade_letter=grade_letter,student_username=username)
+                        group.save()
+                    school.student_set.create(fullname=fullname, last_name='student', email=email, username=username, group_id=group.id)
                     user = User.objects.create_user(password=password, email=email, username=username, first_name=fullname, last_name='student')
                     user.save()
                     login(request, user)
@@ -84,7 +95,7 @@ def student_logout(request):
     if request.user.is_authenticated:
         if request.user.last_name == 'student':
             logout(request)
-            return redirect('/student/student_registration/')
+            return redirect('/')
         else:
             # NEED TO CHECK WHETHER IT IS A School OR A TEACHER
             pass
@@ -165,7 +176,7 @@ def tests(request):
                 parsed_tests = list()
                 now = datetime.datetime.now()
                 student = Student.objects.get(username=request.user.username)
-                grade = student.grade
+                grade = student.group.grade
                 for test in testings:
                     try:
                         enrolled_testing = EnrolledTesting.objects.get(student_id=student.id, test_id=test.id)
@@ -181,7 +192,17 @@ def results_tests(request):
             student = Student.objects.get(username=request.user.username)
             if request.method == 'GET':
                 enrolled_testings = EnrolledTesting.objects.filter(student_id=student.id, istaken=True)
-                return render(request, 'student/resultsOfTesting.html', {'testings': enrolled_testings})
+
+                availableResults = list()
+                now = datetime.datetime.now()
+                for en in enrolled_testings:
+                    if en.test.end_date <= now.date():
+                        availableResults.append(en)
+
+                answersOfTestings = list()
+                for enrolledTest in availableResults:
+                    answersOfTestings.append(enrolledTest.answer_set.all())
+                return render(request, 'student/resultsOfTesting.html', {'enrolledTestings': availableResults, 'answersOfTestings': answersOfTestings})
 
 
 def enroll_student(request, test_id):
@@ -222,6 +243,15 @@ def solving_test(request, test_id):
                     'test': test,
                 }
                 return render(request, 'student/solving_test.html',context)
+    else:
+        return redirect('/')
+
+
+def resultWarning(request):
+    if request.user.is_authenticated:
+        if request.user.last_name == 'student':
+            if request.method == 'GET':
+                return render(request, 'student/resultWarning.html')
 
 
 def get_timer(request, test_id):
@@ -246,15 +276,22 @@ def get_timer(request, test_id):
 def save_answer(request, test_id, question_id):
     if request.user.is_authenticated:
         if request.user.last_name == 'student':
-            if request.method == 'GET':
-                answer = request.GET['answer']
+            if request.method == 'POST':
                 question = Question.objects.get(id=question_id)
-                student = Student.objects.get(username=request.user.username)
-                enrolled_testing = EnrolledTesting.objects.get(student_id=student.id, test_id=test_id)
-                if int(answer) == int(question.answer):
-                    enrolled_testing.result += 1
-                enrolled_testing.save()
-                return redirect('/')
+                correctOption = Option.objects.get(question_id=question.id, option_number=question.answer)
+                try:
+                    answer = request.POST['answer']
+                    student = Student.objects.get(username=request.user.username)
+                    chosenOption = Option.objects.get(question_id=question.id, option_number=answer)
+                    enrolled_testing = EnrolledTesting.objects.get(student_id=student.id, test_id=test_id)
+                    answerModal = enrolled_testing.answer_set.create(question_text=question.question_text, answer=chosenOption.option_text, correctAnswer=correctOption)
+                    if int(answer) == int(question.answer):
+                        enrolled_testing.result += 1
+                        enrolled_testing.save()
+                    return JsonResponse({'chosen': True})
+                except:
+                    answerModal = enrolled_testing.answer_set.create(question_text=question.question_text, answer='', correctAnswer=correctOption)
+                    return JsonResponse({'chosen': False})
 
 
 def submit_homework(request, hw_id):
@@ -270,35 +307,55 @@ def submit_homework(request, hw_id):
                 done_hw.save()
                 return JsonResponse({'isdone': True})
 
+
 def instantiate_student_homework(request, hw_id):
     if request.user.is_authenticated:
         if request.user.last_name == 'student':
             if request.method == 'GET':
                 student = Student.objects.get(username=request.user.username)
                 homework = Homework.objects.get(id=hw_id)
-                student.donehomework_set.create(homework_id=hw_id, subject=homework.subject)
-                return JsonResponse({'isInstantiated': True})
+                checkDoneHomework = DoneHomework.objects.filter(homework_id=hw_id, student_id=student.id)
+                if len(checkDoneHomework) == 0:
+                    student.donehomework_set.create(homework_id=hw_id, subject=homework.subject)
+                    return JsonResponse({'isInstantiated': True})
+                else:
+                    return redirect('/')
 
+# IMAGE COMPRESSION
+def compress(image):
+        im = Image.open(image)
+        # create a BytesIO object
+        im_io = BytesIO() 
+        # save image to BytesIO object
+        #im = im.resize([500,500])
+        im = im.convert("RGB")
+        im = im.save(im_io,'JPEG', quality=50) 
+        # create a django-friendly Files object
+        new_image = File(im_io, name=image.name)
+        return new_image
 
 def upload(request, hw_id):
     if request.user.is_authenticated:
         if request.user.last_name == 'student':
             if request.method == 'POST':
                 photo = request.FILES['file']
+                ext = photo.name.split('.')[-1]
+                filename = '%s.%s' % (uuid.uuid4(), ext)
+                photo.name = filename
+                photo = compress(photo)
+
                 student = Student.objects.get(username=request.user.username)
                 done_homework = DoneHomework.objects.get(homework_id=hw_id, student_id=student.id)
-                imagehw = done_homework.imageshomework_set.create(photo=photo, name=photo.name)
-                return redirect('/')
-
+                imagehw = done_homework.imageshomework_set.create(photo=photo, name=filename)
+                return JsonResponse({'photoName': filename})
 
 def delete_upload(request, file_name):
     if request.user.is_authenticated:
         if request.user.last_name == 'student':
             if request.method == 'GET':
-                photo = ImagesHomework.objects.get(name=file_name)
+                photo = ImagesHomework.objects.filter(name=file_name)
                 photo.delete()
                 return redirect('/')
-
 
 def checked_homeworks(request):
     if request.user.is_authenticated:

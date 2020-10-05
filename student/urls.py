@@ -20,5 +20,6 @@ urlpatterns = [
     path('<str:file_name>/delete_upload/', views.delete_upload, name='delete_upload'),
     path('<int:hw_id>/submit_homework/', views.submit_homework, name='submit_homework'),
     path('<int:hw_id>/instantiate_student_homework/', views.instantiate_student_homework, name='instantiate_student_homework'),
-    path('checked_homeworks/', views.checked_homeworks, name='checked_homeworks')
+    path('checked_homeworks/', views.checked_homeworks, name='checked_homeworks'),
+    path('resultWarning/', views.resultWarning, name='resultWarning')
 ]

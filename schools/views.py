@@ -1,11 +1,10 @@
 from django.shortcuts import render, redirect
-from accounts.forms import SchoolForm
-from accounts.models import School, Teacher, Student
+from .forms import SchoolForm
+from .models import School
+from teacher.models import Teacher
+from student.models import Student
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.models import User
-from django.core import serializers
-from django.http import JsonResponse
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
 # Create your views here.

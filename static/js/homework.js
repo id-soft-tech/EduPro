@@ -27,17 +27,7 @@ for (let submitHwButton of submitHwButtons) {
         })
     }
 }
-// DROPZONE CONFIGURATIONS
-let homeworkDropzone = document.querySelector('#homeworkDropzone');
-let requestUsername = homeworkDropzone.getAttribute('data-username');
-let now = new Date();
-let year = now.getFullYear();
-let month = now.getMonth();
-let date = now.getDate()
-let hours = now.getHours();
-let minutes = now.getMinutes();
-let seconds = now.getSeconds();
-
+let FILENAME = {}
 Dropzone.options.homeworkDropzone = {
     addRemoveLinks: true, 
     dictDefaultMessage: "Перетащите или нажмите для отправки фотографий",
@@ -47,24 +37,19 @@ Dropzone.options.homeworkDropzone = {
     dictInvalidFileType: "Вы не можете загружать файлы этого типа.",
     dictResponseError: "Произошла ошибка при загрузке файла. Попробуйте еще раз. Если ошибка будет повторяться - передайте эту информацию администратору сайта: Код ошибки {{statusCode}}",
     dictCancelUpload: "Отменить загрузку",
+    dictUploadCanceled: 'Загрузка файла было отменено',
     dictCancelUploadConfirmation: "Уверены, что хотите прервать загрузку?",
     dictRemoveFile: "Удалить файл",
-    renameFile: function(file) {
-        let file_comp = file.name.split('.');
-        let type = file_comp[1];
-        let file_name = `${requestUsername}_${file_comp[0]}_${year}${month}${date}${hours}${minutes}${seconds}.${type}`;
-        return file_name;
+    dictRemoveFileConfirmation:  "Вы уверены, что хотите удалить этот файл?",
+    success: function(file, response) {
+        console.log(response['photoName'], file.name)
+        FILENAME[file.name] = response['photoName']
     },
     removedfile: function(file) {
-        let file_comp = file.name.split('.');
-        let type = file_comp[1];
-        let file_name = `${requestUsername}_${file_comp[0]}_${year}${month}${date}${hours}${minutes}${seconds}.${type}`;
+        file_name = FILENAME[file.name]
         $.ajax({
             url: '/student/' + file_name + '/delete_upload/',
             type: 'GET',
-            success: function(response) {
-                console.log('Success!!')
-            }
         })
         return file.previewElement.remove();
     },

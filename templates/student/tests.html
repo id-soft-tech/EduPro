@@ -1,9 +1,6 @@
 {% extends 'student/base.html' %}
 {% load static %}
 {% block title %}Тестирования{% endblock %}
-{% block custom_links %}
-    <link rel="stylesheet" href="{% static 'css/testing.css' %}">
-{% endblock %}
 {% block content %}
     <style>
         html,
@@ -21,8 +18,9 @@
         </style>
         <div class="col-lg-10 col-md-12 wrapper">
             <section>
+                <div class="card-deck">
                     {% for test in tests %}
-                        {% if test.grade == grade %}
+                        {% if test.group_grade == grade %}
                             <div class="col mb-4" style='max-width: 30rem;'>
                                 <div class="card h-100">
                                     <img src="{% static 'images/test.svg' %}" alt="Тестирование">
@@ -34,7 +32,7 @@
                                         <p class="card-text"><span class='description'>Продолжительность тестирования:</span> {{ test.duration }} минут</p>
                                         <p class="card-text"><span class='description'>Количество вопросов:</span> {{ test.quantity }} вопросов</p>
                                     </div>
-                                    <button class='btn btn-primary'><a href='/student/{{test.id}}/0/solving_test/' style='color:white;'>Взять тестирования</a></button>
+                                    <a href='/student/{{test.id}}/0/solving_test/' style='color:white;' class='btn btn-primary'>Взять тестирования</a>
                                     <div class="card-footer">
                                         <small class="text-muted">Составитель: <span class='author'>{{ test.author }}</span></small>
                                     </div>
@@ -42,6 +40,7 @@
                             </div>
                         {% endif %}
                     {% endfor %}
+                </div>
             </section>
         </div>
     {% else %}

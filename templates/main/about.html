@@ -1,30 +1,167 @@
-{% extends 'main/base.html' %}
+<!DOCTYPE html>
 {% load static %}
-{% block title %}О Нас{% endblock %}
-{% block content %}
-    <style>
-        div h1, div h3 {
-            color: white;
-        }
-    </style>
-    <div class="view" style="background-image: url('{% static 'images/edupro.jpg' %}'); background-repeat: no-repeat; background-size: cover; background-position: center center;">
-        <!-- Mask & flexbox options-->
-        <div class="mask rgba-gradient d-flex justify-content-center align-items-center">
-            <!-- Content -->
-            <div class="container">
-            <!--Grid row-->
-                <div class="row mt-6">
-                    <h1>ID Software Technologies</h1>
-                </div>
-                <div class="row mt-6">
-                    <h3>Эта страница на стадии разработки</h3>
-                </div>
-            <!--Grid row-->
+<html>
+<head>
+    <title>О Нас</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/css/mdb.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.14.0/css/all.css" integrity="sha384-HzLeBuhoNPvSl5KYnjx0BT+WB0QEEqLprO+NBkkk5gbc67FTaL7XIGa2w1L0Xbgc" crossorigin="anonymous">
+</head>
+<style>
+    .wrapper {
+        padding-top: 90px;
+    }
+</style>
+<body>
+    <nav class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar">
+          <div class="container">
+    
+            <!-- Brand -->
+            <a class="navbar-brand waves-effect" href="/">
+                <h4 class="text-primary m-0 font-weight-bold">EduPro</h4>
+            </a>
+    
+            <!-- Collapse -->
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+              aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+    
+            <!-- Links -->
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    
+              <!-- Left -->
+              <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                  <a class="nav-link waves-effect" href="/teacher/teacher_registration/">Учительская</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link waves-effect" href="/student/student_registration/">Для Ученика</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link waves-effect" href="#">О Нас</a>
+                </li>
+              </ul>
+     
+              <!-- Right -->
+              <ul class="navbar-nav nav-flex-icons">
+                <li class="nav-item">
+                  <a href="https://www.instagram.com/i.brimow" class="nav-link waves-effect" target="_blank">
+                    <i class="fab fa-instagram"></i>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="https://t.me/ibragimov_di/" class="nav-link waves-effect"
+                    target="_blank">
+                    <i class="fab fa-telegram"></i>
+                  </a>
+                </li>
+              </ul>
+    
             </div>
-            <!-- Content -->
-        </div>
-        <!-- Mask & flexbox options-->
+    
+          </div>
+        </nav>
+    <div class="wrapper d-flex justify-content-center">
+         <div class="container my-5 py-5 z-depth-1 text-center text-lg-left">
+            <section class="px-md-5 mx-md-5 dark-grey-text">
+              <div class="row">
+                <div class="col-lg-6 mb-4">
+                    <h1 class="font-weight-bold">Cognita</h1>
+                    <h3 class="text-muted">Место где учителя и ученики сближаются</h3>
+                    <p class="text-muted">Платформа для дистационного обучения</p>
+                    <p class="text-muted">Мы предоставляем учителям возможность следить за успеваемостью учеников, создавать тестирования (абсолютно бесплатно!), задавать и проверять домашние задания</p>
+                    <p class="text-muted">А, ученикам представляем платформу, где можно проверять свои знания, сдавать домашние задания, обащаться с другими, делиться мнениями и задавать вопросы!</p>
+                </div>
+                <div class="col-lg-6 mb-4">
+                    <div class="view overlay z-depth-1-half">
+                        <img src="{% static 'images/logo.jpg' %}" class="img-fluid" alt="">
+                        <a href="#">
+                            <div class="mask rgba-white-light"></div>
+                        </a>
+                    </div>
+                </div>
+              </div>
+            </section>
+          </div>
     </div>
-    <!-- Full Page Intro -->
-</header>
-{% endblock %}
+      <div class="container my-5 py-5 z-depth-1">
+
+
+    <!--Section: Content-->
+    <section class="px-md-5 mx-md-5 text-center dark-grey-text">
+
+      <!--Grid row-->
+      <div class="row d-flex justify-content-center">
+
+        <!--Grid column-->
+        <div class="col-xl-6 col-md-8">
+
+          <h3 class="font-weight-bold">Особенности</h3>
+
+          <p class="text-muted">Главные особенности и причины использования именно нашей платформы</p>
+
+
+        </div>
+        <!--Grid column-->
+
+      </div>
+      <!--Grid row-->
+
+
+      <!--Grid row-->
+      <div class="row">
+
+        <!--First column-->
+        <div class="col-lg-3 col-md-6">
+          <i class="fas fa-gem fa-3x blue-text"></i>
+ 
+          <p class="font-weight-bold my-3">Абсолютно бесплатно</p>
+
+          <p class="text-muted">Все услуги предоставляемые этой платформой абсолютно бесплатны!</p>
+        </div>
+        <!--/First column-->
+
+        <!--Second column-->
+        <div class="col-lg-3 col-md-6">
+            <i class="fas fa-chart-area fa-3x teal-text"></i>
+
+            <p class="font-weight-bold my-3">Эффективно</p>
+  
+            <p class="text-muted">Тщательно продуманная среда для взаимодействия между учениками и учителями!</p>
+        </div>
+        <!--/Second column-->
+
+        <!--Third column-->
+        <div class="col-lg-3 col-md-6">
+            <i class="fas fa-cogs fa-3x indigo-text"></i>
+
+            <p class="font-weight-bold my-3">Надежно</p>
+  
+            <p class="text-muted">Надежное распространение информации</p>
+        </div>
+        <!--/Third column-->
+
+        <!--Fourth column-->
+        <div class="col-lg-3 col-md-6">
+            <i class="fas fa-cloud-upload-alt fa-3x deep-purple-text"></i>
+
+            <p class="font-weight-bold my-3">Быстро</p>
+  
+            <p class="text-muted">Выполняйте работу быстро и без траты лишнего времени на ожидание!</p>
+        </div>
+        <!--/Fourth column-->
+
+      </div>
+      <!--/Grid row-->
+
+
+    </section>
+    <!--Section: Content-->
+
+
+  </div>
+    <footer></footer>
+</body>
+</html>

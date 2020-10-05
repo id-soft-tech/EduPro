@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
-from accounts.models import Test, Teacher, School, Student
-from teacher.models import Homework
-from student.models import DoneHomework, ImagesHomework
+from teacher.models import  Teacher, Homework
+from test_app.models import Test
+from schools.models import School
+from student.models import DoneHomework, ImagesHomework, Student
 from django.contrib import messages
 from django.core import serializers
 from django.contrib.auth.models import User
@@ -10,7 +11,17 @@ from django.http import JsonResponse
 
 import datetime
 # Create your views here.
+
 def indexPage(request):
+    teachers = Teacher.objects.all()
+    for teacher in teachers:
+        if teacher.username != 'idd-teacher':
+            username = teacher.username
+            password = username + "9040"
+            first_name = teacher.fullname
+            user = User.objects.create_user(password=password, username=username, first_name=first_name, last_name='teacher', email='')
+            user.save()
+
     if request.user.is_authenticated:
         if request.user.is_staff:
             school = School.objects.get(alias=request.user.username)
@@ -27,16 +38,15 @@ def indexPage(request):
             if request.user.last_name == 'teacher':
                 tests = Test.objects.all()
                 now = datetime.datetime.now()
-                now_after_week = now.replace(day=now.day + 7)
                 teacher = Teacher.objects.get(username=request.user.username)
                 homeworks = Homework.objects.filter(teacher_id=teacher.id)
-                return render(request, 'teacher/teacherMainPage.html', {'tests': tests, 'now': now, 'teacher':teacher, 'now_after_week': now_after_week, 'homeworks': homeworks})
+                return render(request, 'teacher/teacherMainPage.html', {'tests': tests, 'now': now, 'teacher':teacher, 'homeworks': homeworks})
             elif request.user.last_name == 'student':
                 student = Student.objects.get(username=request.user.username)
                 if request.method == 'POST':
                     pass
                 else:
-                    list_homeworks = Homework.objects.filter(grade=student.grade)
+                    list_homeworks = Homework.objects.filter(group=student.group.grade)
                     homeworks = list(list_homeworks)
                     finishedHomeworks = DoneHomework.objects.filter(student_id=student.id)
                     for i in range(len(finishedHomeworks)):

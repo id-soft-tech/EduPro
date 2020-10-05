@@ -1,16 +1,28 @@
 from django.db import models
-from accounts.models import Teacher
+from schools.models import School
 
 # Create your models here.
+
+class Teacher(models.Model):
+    school = models.ForeignKey(School, on_delete=models.CASCADE)
+    fullname = models.CharField(max_length=255)
+    username = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=255)
+    email = models.EmailField(max_length=255)
+    likes = models.IntegerField(default=0)
+    number_of_tests = models.IntegerField(default=0)
+    number_of_lessons = models.IntegerField(default=0)
+    tested_pupils = models.IntegerField(default=0)
+    sentHomeworks = models.IntegerField(default=0)
+    
+    def __str__(self):
+        return '%s' % self.fullname
+
+    class Meta:
+        ordering = ['id']
+
+
 class Homework(models.Model):
-    GRADE_CHOICES = (
-        ('1',"1 класс"), ('2',"2 класс"),
-        ('3', "3 класс"), ('4', "4 класс"),
-        ('5', "5 класс"), ('6', "6 класс"),
-        ('7', "7 класс"), ('8', "8 класс"),
-        ('9', "9 класс"), ('10', "10 класс"),
-        ('11', "11 класс"),
-    )
     DURATION_TIME = (
         ('1', '1 день'), ('2', '2 дня'),
         ('3', '3 дня'), ('4', '4 дня'),
@@ -18,7 +30,7 @@ class Homework(models.Model):
         ('7', '7 дней'),
     )
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
-    grade = models.CharField(max_length=255, choices=GRADE_CHOICES)
+    group = models.IntegerField()
     task = models.TextField()
     subject = models.CharField(max_length=255)
     created = models.DateTimeField()

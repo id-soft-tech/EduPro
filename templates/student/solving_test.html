@@ -25,10 +25,10 @@
             <form id='solve_test_form' data-test-id='{{ q.test.id }}' data-question-id='{{ q.id }}'>
                 <h2>{{ ques.current_page_number}} {{ q.question_text }}</h2>
                 {% for o in q.option_set.all %}
-                    <label class='container'>{{ o.option_text }}
+                    <div class='option-wrapper'>
                         <input type='radio' id='option{{o.option_number}}' name='option' value="{{ o.option_number }}">
-                        <span class='checkmark'></span>
-                    </label>
+                        <label for='option{{o.option_number}}'>{{ o.option_text }}</label>
+                    </div>
                 {% endfor %}
             </form>
             
@@ -38,7 +38,7 @@
                 {% if ques.has_next %}
                     <a href='?page={{ ques.next_page_number }}'><button class='btn form-control btn-primary' type='button' id='save_answer' style="height: 45px;">Следующий</button></a>
                 {% else %}
-                    <button type="button" class="btn btn-success form-control resultWarningModal" data-toggle="modal" data-target="#resultWarningModal" id='save_answer' style="height: 45px;">Сдать тестирование</button>
+                    <a href='/student/resultWarning/'><button type="button" class="btn btn-success form-control resultWarningModal" id='save_answer' style="height: 45px;">Сдать тестирование</button></a>
                 {% endif %}
             </div>
         </div>
@@ -64,7 +64,7 @@
         </div>
     </div>
     <div id="timer"></div>
-    <script src='{% static 'js/solve_test.js' %}'></script>
+    <script src="{% static 'js/solve_test.js' %}"></script>
     <footer></footer>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
     <!-- Bootstrap core JavaScript -->

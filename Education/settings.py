@@ -37,12 +37,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'accounts.apps.AccountsConfig',
     'main.apps.MainConfig',
+    'test_app.apps.TestAppConfig',
     'teacher.apps.TeacherConfig',
     'schools.apps.SchoolsConfig',
     'student.apps.StudentConfig',
     'django_cleanup',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -80,8 +81,12 @@ WSGI_APPLICATION = 'Education.wsgi.application'
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'ibrimow_main',
+        'USER': 'ibrimow_main',
+        'PASSWORD': 'ibrimow_12090487',
+        'HOST': 'ibrimow.beget.tech',
+        'PORT': '3306',
     }
 }
 
@@ -127,3 +132,12 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'), )
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+# S3 BUCKETS CONFIG
+AWS_ACCESS_KEY_ID = 'AKIAVE5GDGQEEG3I5HER'
+AWS_SECRET_ACCESS_KEY = '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'
+AWS_STORAGE_BUCKET_NAME = 'id-software-tech-cognita'
+
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL = None
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'

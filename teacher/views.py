@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect, reverse
-from accounts.models import School, Teacher, Test, Option, Question, Student
-from student.models import EnrolledTesting, DoneHomework
-from teacher.models import Homework
+from test_app.models import Test, Option, Question
+from student.models import EnrolledTesting, DoneHomework, Student
+from schools.models import School
+from teacher.models import Homework, Teacher
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.http import JsonResponse
@@ -21,14 +22,13 @@ def teacher_main_page(request):
         else:
             return redirect('/')
     else:
-        # Redirects to verification page (teacher is asked to type the alias and password of the school)
-        return redirect('/teacher/teacher_registration/')
+        return redirect('/')
 
 
 def teacher_registration(request):
     if request.user.is_authenticated:
         if request.user.last_name == 'teacher':
-            return render(request, '/teacher/teacherMainPage.html')
+            return render(request, 'teacher/teacherMainPage.html')
         else:
             return redirect('/')
     else:
@@ -63,10 +63,7 @@ def teacher_registration(request):
 
 def teacher_login(request):
     if request.user.is_authenticated:
-        if request.user.last_name == 'teacher':
-            return render(request, 'teacher/teacherMainPage.html')
-        else:
-            return redirect('/')
+        return redirect('/')
     else:
         if request.method == 'POST':
             username = request.POST.get('username')
@@ -85,7 +82,7 @@ def teacher_logout(request):
     if request.user.is_authenticated:
         if request.user.last_name == 'teacher':
             logout(request)
-            return redirect('/teacher/teacher_registration/')
+            return redirect('/')
         else:
             return redirect('/')
     else:
@@ -181,7 +178,7 @@ def creating_test(request):
                     return redirect('/teacher/creating_test/')
                 try:
                     teacher = Teacher.objects.get(username=request.user.username)
-                    teacher.test_set.create(name=name, subject=subject, grade=grade, start_date=start_date, end_date=end_date,duration=duration, quantity=quantity, author=author, left=int(quantity), created=now)
+                    teacher.test_set.create(name=name, subject=subject, group_grade=grade, start_date=start_date, end_date=end_date,duration=duration, quantity=quantity, author=author, left=int(quantity), created=now)
                     teacher.number_of_tests += 1
                     teacher.save()
                     return redirect('/')
@@ -306,8 +303,11 @@ def results(request, test_id):
                 test = Test.objects.get(id=test_id)
                 now = datetime.datetime.now()
                 if now.date() > test.end_date:
-                    testing_results = EnrolledTesting.objects.filter(test_id=test_id)
-                    return render(request, 'teacher/results.html', {'results':testing_results, 'test':test})
+                    enrolledTestingResults = EnrolledTesting.objects.filter(test_id=test_id)
+                    answersOfTestings = list()
+                    for enrolledTestResult in enrolledTestingResults:
+                        answersOfTestings.append(enrolledTestResult.answer_set.all())
+                    return render(request, 'teacher/results.html', {'enrolledTestingResults':enrolledTestingResults, 'test':test, 'answersOfTestings': answersOfTestings})
                 else:
                     return redirect('/')
 
@@ -323,7 +323,7 @@ def homework(request):
                 task = request.POST.get('task')
                 now = datetime.datetime.now()
                 now = utc.localize(now)
-                teacher.homework_set.create(subject=subject, grade=grade, duration=duration, task=task,created=now)
+                teacher.homework_set.create(subject=subject, group=grade, duration=duration, task=task,created=now)
                 teacher.number_of_lessons += 1
                 teacher.save()
                 return redirect('/')
@@ -338,7 +338,26 @@ def viewing_homework(request, hw_id):
                 pass
             else:
                 sentHomeworks = DoneHomework.objects.filter(homework_id=hw_id, done=True)
-                return render(request, 'teacher/homeworks.html', {'homeworks': sentHomeworks})
+                allHw = [[], [], [], [], [], [], [], []]
+                for sw in sentHomeworks:
+                    if sw.student.group.grade_letter == 'А':
+                        allHw[0].append(sw)
+                    elif sw.student.group.grade_letter == 'Б':
+                        allHw[1].append(sw)
+                    elif sw.student.group.grade_letter == 'В':
+                        allHw[2].append(sw)
+                    elif sw.student.group.grade_letter == 'Г':
+                        allHw[3].append(sw)
+                    elif sw.student.group.grade_letter == 'Д':
+                        allHw[4].append(sw)
+                    elif sw.student.group.grade_letter == 'Е':
+                        allHw[5].append(sw)
+                    elif sw.student.group.grade_letter == 'Ё':
+                        allHw[6].append(sw)
+                    elif sw.student.group.grade_letter == 'Ж':
+                        allHw[7].append(sw)
+                print(allHw)
+                return render(request, 'teacher/homeworks.html', {'homeworks': allHw})
 
 
 def deleting_homework(request, hw_id):

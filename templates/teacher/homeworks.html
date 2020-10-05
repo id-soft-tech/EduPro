@@ -36,21 +36,22 @@
     <div class="row">
         <div class='col'>
             <h2>Домашние задания</h2>
-            {% if homeworks %}
+                {% if homeworks %}
+                {% for groupHw in homeworks %}
+                {% if groupHw %}
                 <table class="table table-hover table-responsive">
                     <thead>
                         <tr>
                             <th scope='col'>Ученик</th>
-                            <th scope='col'>Класс</th>
                             <th scope='col'>Домашнее задание</th>
                             <th scope='col'>Проверено</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for doneHw in homeworks %}
+                        {% for doneHw in groupHw %}
+                            <h4>{{ doneHw.student.group.grade }} "{{ doneHw.student.group.grade_letter }}"</h4>
                             <tr>
                                 <td>{{ doneHw.student.fullname }}</td>
-                                <td>{{ doneHw.student.grade }} "{{doneHw.student.grade_letter}}" класс</td>
                                 {% if doneHw.checked %}
                                     <td>
                                         <p><span class='text-success'>Проверено.</span> Оценка - {{ doneHw.mark }}</p>
@@ -73,6 +74,8 @@
                         {% endfor %}
                     </tbody>
                 </table>
+                {% endif %}
+                {% endfor %}
                 {% else %}
                     <h4 class="text-muted mt-5">Ученики ещё не сделали домашнее задание</h4>
             {% endif %}
